@@ -944,9 +944,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1490522257}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ff9ae2669dea4d53af48578b171bf2c, type: 3}
+  m_Script: {fileID: 11500000, guid: 68d4a0329d31348179d3bf4cf052ba07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  usernameForm: {fileID: 2030190066}
+  emailForm: {fileID: 1583164961}
+  passwordForm: {fileID: 725767078}
+  signupButtonForm: {fileID: 851178908}
 --- !u!1 &1583164959
 GameObject:
   m_ObjectHideFlags: 0

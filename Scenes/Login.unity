@@ -611,6 +611,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43100fc3dc29f4b86a0f9b73172a4d87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emailForm: {fileID: 1291013682}
+  passwordForm: {fileID: 1437932827}
+  loginButtonForm: {fileID: 1604599628}
 --- !u!1 &1291013680
 GameObject:
   m_ObjectHideFlags: 0

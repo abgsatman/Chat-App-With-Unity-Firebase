@@ -1,7 +1,7 @@
 ﻿/*
 * Unity C#, Firebase: Multiplayer Oyun Altyapısı Geliştirme Udemy Eğitimi
 * Copyright (C) 2019 A.Gokhan SATMAN <abgsatman@gmail.com>
-* This file is a part of TicTacToe project.
+* This file is a part of CHAT project.
 */
 
 using Firebase;
@@ -68,11 +68,38 @@ public class DBManager : Singleton<DBManager>
 
     public void CreateUser(string username)
     {
+        Dictionary<string, object> general = new Dictionary<string, object>();
+        general["Username"] = username;
 
+        usersDatabase.Child(user.userId).Child("General").UpdateChildrenAsync(general);
+        user.username = username;
+
+        Debug.Log("Kullanıcı başarıyla oluşturuldu, login sahnesine yönlendiriliyorsunuz...");
+
+        SceneManager.LoadScene("Login");
     }
 
     public void GetUserInformation()
     {
+        usersDatabase.Child(user.userId).GetValueAsync().ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.Log("faulted");
+                return;
+            }
+            if (task.IsCompleted)
+            {
+                DataSnapshot snapshot = task.Result;
 
+                string username = snapshot.Child("General").Child("Username").Value.ToString();
+
+                user.username = username;
+
+                Debug.Log("Kullanıcı login oldu ve bilgileri çekildi, lobby sahnesine yönlendiriliyorsunuz...");
+
+                SceneManager.LoadScene("Lobby");
+            }
+        });
     }
 }

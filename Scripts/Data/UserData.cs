@@ -1,7 +1,7 @@
 ﻿/*
 * Unity C#, Firebase: Multiplayer Oyun Altyapısı Geliştirme Udemy Eğitimi
 * Copyright (C) 2019 A.Gokhan SATMAN <abgsatman@gmail.com>
-* This file is a part of TicTacToe project.
+* This file is a part of CHAT project.
 */
 
 using System.Collections;
@@ -17,9 +17,5 @@ public class UserData : Singleton<UserData>
     #region General
     public string userId;
     public string username;
-    #endregion
-
-    #region Progression
-    public int score;
     #endregion
 }
