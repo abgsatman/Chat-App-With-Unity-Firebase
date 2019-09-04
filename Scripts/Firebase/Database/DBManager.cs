@@ -104,9 +104,14 @@ public class DBManager : Singleton<DBManager>
         });
     }
 
+    public void DeleteChatKey(string chatItemKey)
+    {
+        roomsDatabase.Child(room.roomId).Child("Messages").Child(chatItemKey).RemoveValueAsync();
+    }
+
     public void OpenListenChatRoom()
     {
-        roomsDatabase.Child(room.roomId).Child("Content").ValueChanged += ListenChatRoom;
+        roomsDatabase.Child(room.roomId).Child("Messages").ValueChanged += ListenChatRoom;
     }
 
     public void ListenChatRoom(object sender, ValueChangedEventArgs args)
@@ -119,17 +124,21 @@ public class DBManager : Singleton<DBManager>
 
         var snapshot = args.Snapshot;
 
-        Debug.Log("Odaya mesaj gönderildi!");
+        //Debug.Log("Odaya mesaj gönderildi!");
 
         foreach (DataSnapshot mesajlar in snapshot.Children)
         {
             string mesaj = snapshot.Child(mesajlar.Key).Child("Mesaj").Value.ToString();
-            Debug.Log(mesaj); 
+
+            if(!room.messages.Contains(mesajlar.Key))
+            {
+                room.messages.Add(mesajlar.Key);
+            }
         }
     }
 
     public void CloseListenChatRoom()
     {
-        roomsDatabase.Child(room.roomId).Child("Content").ValueChanged -= ListenChatRoom;
+        roomsDatabase.Child(room.roomId).Child("Messages").ValueChanged -= ListenChatRoom;
     }
 }
