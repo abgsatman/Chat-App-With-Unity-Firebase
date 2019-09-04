@@ -60,7 +60,12 @@ public class AuthManager : Singleton<AuthManager>
             }
             FirebaseUser newUser = task.Result;
             DB.user.userId = newUser.UserId;
-            DB.GetUserInformation();
+
+            //event listener açılıyor.
+            DB.OpenListenChatRoom();
+
+            SceneManager.LoadScene("Chat");
+            //DB.GetUserInformation();
         });
     }
 

@@ -19,19 +19,19 @@ public class DBManager : Singleton<DBManager>
     public AuthManager auth;
 
     public UserData user;
+    public RoomData room;
 
     public DatabaseReference usersDatabase;
     public DatabaseReference roomsDatabase;
-    public DatabaseReference invitesDatabase;
-    public DatabaseReference acceptedInvitesDatabase;
 
-    public string FirebaseDBURL = "https://udemy-deneme-projesi.firebaseio.com/";
+    public string FirebaseDBURL = "https://training-tg.firebaseio.com/";
 
     void Start()
     {
         auth = AuthManager.Instance;
 
         user = UserData.Instance;
+        room = RoomData.Instance;
 
         Initialization();
     }
@@ -45,9 +45,7 @@ public class DBManager : Singleton<DBManager>
             if (dependencyStatus == DependencyStatus.Available)
             {
                 usersDatabase = FirebaseDatabase.DefaultInstance.GetReference("Users");
-                roomsDatabase = FirebaseDatabase.DefaultInstance.GetReference("Rooms");
-                invitesDatabase = FirebaseDatabase.DefaultInstance.GetReference("Invites");
-                acceptedInvitesDatabase = FirebaseDatabase.DefaultInstance.GetReference("AcceptedInvites");
+                roomsDatabase = FirebaseDatabase.DefaultInstance.GetReference("ChatRooms");
 
                 if(auth.auth.CurrentUser != null)
                 {
@@ -98,8 +96,40 @@ public class DBManager : Singleton<DBManager>
 
                 Debug.Log("Kullanıcı login oldu ve bilgileri çekildi, lobby sahnesine yönlendiriliyorsunuz...");
 
+                //event listener açılıyor.
+                OpenListenChatRoom();
+
                 SceneManager.LoadScene("Lobby");
             }
         });
+    }
+
+    public void OpenListenChatRoom()
+    {
+        roomsDatabase.Child(room.roomId).Child("Content").ValueChanged += ListenChatRoom;
+    }
+
+    public void ListenChatRoom(object sender, ValueChangedEventArgs args)
+    {
+        if (args.DatabaseError != null)
+        {
+            Debug.LogError(args.DatabaseError.Message);
+            return;
+        }
+
+        var snapshot = args.Snapshot;
+
+        Debug.Log("Odaya mesaj gönderildi!");
+
+        foreach (DataSnapshot mesajlar in snapshot.Children)
+        {
+            string mesaj = snapshot.Child(mesajlar.Key).Child("Mesaj").Value.ToString();
+            Debug.Log(mesaj); 
+        }
+    }
+
+    public void CloseListenChatRoom()
+    {
+        roomsDatabase.Child(room.roomId).Child("Content").ValueChanged -= ListenChatRoom;
     }
 }

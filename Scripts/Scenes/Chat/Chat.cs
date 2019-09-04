@@ -10,15 +10,18 @@ using UnityEngine;
 
 public class Chat : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private DBManager DB;
+
+    private UserData user;
+    private RoomData room;
+
     void Start()
     {
-        
-    }
+        DB = DBManager.Instance;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        user = UserData.Instance;
+        room = RoomData.Instance;
+
+        DB.OpenListenChatRoom();
     }
 }
