@@ -1,18 +1,78 @@
-﻿using System.Collections;
+﻿/*
+* Unity C#, Firebase: Multiplayer Oyun Altyapısı Geliştirme Udemy Eğitimi
+* Copyright (C) 2019 A.Gokhan SATMAN <abgsatman@gmail.com>
+* This file is a part of TicTacToe project.
+*/
+
+using Firebase;
+using Firebase.Database;
+using Firebase.Unity.Editor;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class DBManager : MonoBehaviour
+public class DBManager : Singleton<DBManager>
 {
-    // Start is called before the first frame update
+    public AuthManager auth;
+
+    public UserData user;
+
+    public DatabaseReference usersDatabase;
+    public DatabaseReference roomsDatabase;
+    public DatabaseReference invitesDatabase;
+    public DatabaseReference acceptedInvitesDatabase;
+
+    public string FirebaseDBURL = "https://udemy-deneme-projesi.firebaseio.com/";
+
     void Start()
     {
-        
+        auth = AuthManager.Instance;
+
+        user = UserData.Instance;
+
+        Initialization();
     }
 
-    // Update is called once per frame
-    void Update()
+    void Initialization()
     {
-        
+        FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(FirebaseDBURL);
+
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
+            var dependencyStatus = task.Result;
+            if (dependencyStatus == DependencyStatus.Available)
+            {
+                usersDatabase = FirebaseDatabase.DefaultInstance.GetReference("Users");
+                roomsDatabase = FirebaseDatabase.DefaultInstance.GetReference("Rooms");
+                invitesDatabase = FirebaseDatabase.DefaultInstance.GetReference("Invites");
+                acceptedInvitesDatabase = FirebaseDatabase.DefaultInstance.GetReference("AcceptedInvites");
+
+                if(auth.auth.CurrentUser != null)
+                {
+                    auth.AutoLogin(auth.auth.CurrentUser.UserId);
+                }
+                else
+                {
+                    SceneManager.LoadScene("Login");
+                }
+            }
+            else
+            {
+                Debug.LogError(String.Format(
+                  "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
+            }
+        });
+    }
+
+    public void CreateUser(string username)
+    {
+
+    }
+
+    public void GetUserInformation()
+    {
+
     }
 }
